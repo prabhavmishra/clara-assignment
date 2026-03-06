@@ -1,0 +1,15 @@
+Demo Call Transcript - Example
+
+Client: Hi, we're Acme Fire Protection. We're looking at automating our after-hours calls.
+
+Rep: Great. What kind of calls do you handle?
+
+Client: We do sprinkler inspections, fire alarm service, and emergency work. Our business hours are Monday through Friday 9am to 5pm Eastern. We're in EST.
+
+Rep: And for emergencies after hours?
+
+Client: We usually transfer to our dispatch. If transfer fails we tell the caller someone will call back within an hour. We never create sprinkler jobs in ServiceTrade from the phone—that's a constraint. Our office is at 123 Main Street.
+
+Rep: Got it. Anything else?
+
+Client: That's the main stuff for the demo.

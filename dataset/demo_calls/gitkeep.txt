@@ -1,0 +1,2 @@
+# Place demo call transcript files here (e.g. demo_01.txt, demo_02.txt).
+# Filename pattern: demo_<id>.txt or similar; account_id will be derived as account_<id>.

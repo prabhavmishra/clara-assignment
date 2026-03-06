@@ -1,0 +1,3 @@
+# Clara Answers Pipeline - Zero-cost, local only
+# Python 3.10+ required. No paid APIs or external services.
+# Standard library only: json, pathlib, re, argparse, logging.

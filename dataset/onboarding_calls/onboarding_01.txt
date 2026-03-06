@@ -1,0 +1,21 @@
+Onboarding Call - Acme Fire Protection
+
+Rep: Let's confirm your details. Business hours?
+
+Client: Monday to Friday 9am to 5pm EST. Same as we said.
+
+Rep: Emergency definition for routing?
+
+Client: All emergency sprinkler calls must go directly to the phone tree. Fire alarm and water leak count as emergency.
+
+Rep: Transfer timeout?
+
+Client: If transfer fails after 60 seconds, dispatch must be notified. We retry twice.
+
+Rep: ServiceTrade?
+
+Client: Never create sprinkler jobs in ServiceTrade from the agent. Only inspections can be created there.
+
+Rep: Address for records?
+
+Client: 123 Main Street, Suite 100.
