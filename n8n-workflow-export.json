@@ -1,0 +1,134 @@
+{
+  "name": "Clara AI - Demo to Onboarding Agent Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "list",
+        "path": "dataset/demo_calls",
+        "options": {}
+      },
+      "name": "List Demo Files",
+      "type": "n8n-nodes-base.localFileTrigger",
+      "typeVersion": 1,
+      "position": [100, 100]
+    },
+    {
+      "parameters": {
+        "operation": "readBinary",
+        "filePath": "={{ $node['List Demo Files'].json.path }}",
+        "options": {}
+      },
+      "name": "Read Demo Transcript",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [300, 100],
+      "dependsOn": ["List Demo Files"]
+    },
+    {
+      "parameters": {
+        "command": "python3 scripts/extract_demo_data.py {{ $node['List Demo Files'].json.path }} -o /tmp/v1_memo.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Extract v1 Memo (Demo)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [500, 100],
+      "dependsOn": ["Read Demo Transcript"]
+    },
+    {
+      "parameters": {
+        "command": "python3 scripts/generate_agent_prompt.py /tmp/v1_memo.json --version v1 -o /tmp/v1_spec.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Generate v1 Agent Spec",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [700, 100],
+      "dependsOn": ["Extract v1 Memo (Demo)"]
+    },
+    {
+      "parameters": {
+        "command": "mkdir -p outputs/accounts/$(jq -r .account_id /tmp/v1_memo.json)/v1 && cp /tmp/v1_memo.json outputs/accounts/$(jq -r .account_id /tmp/v1_memo.json)/v1/account_memo.json && cp /tmp/v1_spec.json outputs/accounts/$(jq -r .account_id /tmp/v1_memo.json)/v1/retell_agent_spec.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Store v1 Outputs",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [900, 100],
+      "dependsOn": ["Generate v1 Agent Spec"]
+    },
+    {
+      "parameters": {
+        "filePath": "dataset/onboarding_calls/onboarding_{{ $node['List Demo Files'].json.path.match(/\\d+/)[0] }}.txt"
+      },
+      "name": "Find Paired Onboarding",
+      "type": "n8n-nodes-base.readLocalFile",
+      "typeVersion": 1,
+      "position": [300, 300],
+      "dependsOn": ["List Demo Files"]
+    },
+    {
+      "parameters": {
+        "command": "python3 scripts/extract_onboarding_updates.py {{ $node['Find Paired Onboarding'].json.filePath }} -o /tmp/updates.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Extract Onboarding Updates",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "dependsOn": ["Find Paired Onboarding"]
+    },
+    {
+      "parameters": {
+        "command": "python3 scripts/apply_updates.py /tmp/v1_memo.json /tmp/updates.json -o /tmp/v2_memo.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Apply Updates (v1→v2 Memo)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [700, 300],
+      "dependsOn": ["Extract Onboarding Updates"]
+    },
+    {
+      "parameters": {
+        "command": "python3 scripts/generate_agent_prompt.py /tmp/v2_memo.json --version v2 -o /tmp/v2_spec.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Generate v2 Agent Spec",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "dependsOn": ["Apply Updates (v1→v2 Memo)"]
+    },
+    {
+      "parameters": {
+        "command": "python3 scripts/changelog_utils.py --v1-memo /tmp/v1_memo.json --v2-memo /tmp/v2_memo.json --v1-spec /tmp/v1_spec.json --v2-spec /tmp/v2_spec.json --output changelog/$(jq -r .account_id /tmp/v1_memo.json)_changelog",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Generate Changelog",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "dependsOn": ["Generate v2 Agent Spec"]
+    },
+    {
+      "parameters": {
+        "command": "mkdir -p outputs/accounts/$(jq -r .account_id /tmp/v2_memo.json)/v2 && cp /tmp/v2_memo.json outputs/accounts/$(jq -r .account_id /tmp/v2_memo.json)/v2/account_memo.json && cp /tmp/v2_spec.json outputs/accounts/$(jq -r .account_id /tmp/v2_memo.json)/v2/retell_agent_spec.json",
+        "workingDirectory": "/Users/prabhavmishra/Desktop/ClaraAI"
+      },
+      "name": "Store v2 Outputs",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [1100, 100],
+      "dependsOn": ["Generate Changelog"]
+    }
+  ],
+  "connections": {},
+  "active": true,
+  "settings": {},
+  "description": "Zero-cost automation pipeline: Demo call → v1 agent → Onboarding → v2 agent + changelog. Runs on local Python scripts with standard library only. No paid APIs.",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "local-n8n"
+  }
+}
