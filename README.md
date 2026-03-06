@@ -1,11 +1,21 @@
 # Clara Answers – Zero-Cost Automation Pipeline
 
-## How to Run
-Clone the repo and run:
-``bash
-python3 scripts/run_pipeline.py
+## Quick Start
 
-A **local, rule-based** pipeline that turns demo call and onboarding call transcripts into structured account memos and Retell agent specs, with versioning (v1 → v2) and changelog generation. No paid APIs; no hallucination of missing data.
+Clone the repo and run:
+
+```bash
+python3 scripts/run_pipeline.py
+```
+
+**A local, rule-based pipeline** that turns demo call and onboarding call transcripts into structured account memos and Retell agent specs, with versioning (v1 → v2) and changelog generation. **Zero cost, no hallucination.**
+
+## 📚 Documentation
+
+- **[README.md](./README.md)** (this file) – Project overview and quick start
+- **[SETUP_DEPLOYMENT.md](./SETUP_DEPLOYMENT.md)** – Complete setup, testing, and deployment guide
+- **[RETELL_INTEGRATION.md](./RETELL_INTEGRATION.md)** – How to configure agents in Retell (manual or API)
+- **[N8N_DEPLOYMENT.md](./N8N_DEPLOYMENT.md)** – Deploy with n8n workflow automation (optional)
 
 ---
 
